@@ -9,6 +9,10 @@
       text-align: center;
       padding-top: 50px;
       background: #f2f2f2;
+      position: relative;
+      min-height: 100vh;
+      margin: 0;
+      padding-bottom: 70px; /* para que no tape contenido */
     }
     h1 {
       font-size: 2rem;
@@ -37,6 +41,33 @@
     #reset:hover {
       background: #da190b;
     }
+
+    /* Estilo para el botón de PayPal fijo en esquina inferior derecha */
+    #paypal-donate {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      z-index: 1000;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+    }
+
+    #paypal-donate input[type="submit"] {
+      background: #0070ba;
+      color: white;
+      font-weight: bold;
+      border: none;
+      padding: 12px 20px;
+      cursor: pointer;
+      font-size: 1rem;
+      border-radius: 8px;
+      transition: background 0.3s;
+    }
+
+    #paypal-donate input[type="submit"]:hover {
+      background: #005c99;
+    }
   </style>
 </head>
 <body>
@@ -46,22 +77,35 @@
   <br/>
   <button id="reset">Reiniciar</button>
 
+  <!-- Botón de donación PayPal fijo -->
+  <form
+    id="paypal-donate"
+    action="https://www.paypal.com/donate"
+    method="post"
+    target="_blank"
+    >
+    <input type="hidden" name="business" value="francoliendo36@gmail.com" />
+    <input type="hidden" name="currency_code" value="USD" />
+    <input type="submit" value="Donar con PayPal" />
+  </form>
+
   <script>
-    let score = 0;
-    const scoreElement = document.getElementById('score');
-    const clicker = document.getElementById('clicker');
-    const reset = document.getElementById('reset');
+    document.addEventListener('DOMContentLoaded', () => {
+      let score = 0;
+      const scoreElement = document.getElementById('score');
+      const clicker = document.getElementById('clicker');
+      const reset = document.getElementById('reset');
 
-    clicker.addEventListener('click', () => {
-      score++;
-      scoreElement.textContent = score;
-    });
+      clicker.addEventListener('click', () => {
+        score++;
+        scoreElement.textContent = score;
+      });
 
-    reset.addEventListener('click', () => {
-      score = 0;
-      scoreElement.textContent = score;
+      reset.addEventListener('click', () => {
+        score = 0;
+        scoreElement.textContent = score;
+      });
     });
   </script>
 </body>
 </html>
-
