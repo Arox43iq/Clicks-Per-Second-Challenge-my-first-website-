@@ -21,7 +21,7 @@
       border-image-outset: 0;
       border-image: url('https://png.pngtree.com/png-vector/20230413/ourlarge/pngtree-the-neat-arabesque-frame-border-creative-design-is-suitable-for-decorating-vector-png-image_6703073.png') 100 round;
       border-radius: 30px;
-}
+    }
 
     body {
       font-family: Arial, sans-serif;
@@ -84,15 +84,42 @@
       margin-left: auto;
       margin-right: auto;
     }
+
+    /* Botón PayPal fijo */
+    #paypal-donate {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      z-index: 1000;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+    }
+
+    #paypal-donate input[type="submit"] {
+      background: #0070ba;
+      color: white;
+      font-weight: bold;
+      border: none;
+      padding: 12px 20px;
+      cursor: pointer;
+      font-size: 1rem;
+      border-radius: 8px;
+      transition: background 0.3s;
+    }
+
+    #paypal-donate input[type="submit"]:hover {
+      background: #005c99;
+    }
   </style>
 </head>
 <body>
   <div class="bordered-container">
     <h1>Clicks Per Second Challenge</h1>
     <div id="instructions">
-  <p>Haz clic en el botón tantas veces como puedas en 20 segundos. ¡Mide tus clicks por segundo!</p>
-  <p>Click the button as many times as you can in 20 seconds. Measure your clicks per second!</p>
-</div>
+      <p>Haz clic en el botón tantas veces como puedas en 20 segundos. ¡Mide tus clicks por segundo!</p>
+      <p>Click the button as many times as you can in 20 seconds. Measure your clicks per second!</p>
+    </div>
     <div id="timer">Time left: 20s</div>
     <div id="score">0</div>
     <button id="clicker">Click Me!</button>
@@ -106,6 +133,13 @@
       <p>Récord personal (total clicks): <span id="personalRecord">0</span></p>
     </div>
   </div>
+
+  <!-- Botón PayPal con emoji ☕ -->
+  <form id="paypal-donate" action="https://www.paypal.com/donate" method="post" target="_blank">
+    <input type="hidden" name="business" value="francoliendo36@gmail.com" />
+    <input type="hidden" name="currency_code" value="USD" />
+    <input type="submit" value="☕ Buy me a coffee =)" />
+  </form>
 
   <script>
     const timeTotal = 20;
