@@ -2,109 +2,166 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <title>Minijuego de Clicks</title>
+  <title>Clicks Per Second Challenge</title>
   <style>
     body {
       font-family: Arial, sans-serif;
       text-align: center;
       padding-top: 50px;
       background: #f2f2f2;
-      position: relative;
-      min-height: 100vh;
-      margin: 0;
-      padding-bottom: 70px; /* para que no tape contenido */
     }
     h1 {
       font-size: 2rem;
+      margin-bottom: 10px;
+    }
+    #timer {
+      font-size: 2rem;
+      margin-bottom: 10px;
     }
     #score {
       font-size: 3rem;
       margin: 20px 0;
     }
     button {
-      padding: 20px 40px;
-      font-size: 1.5rem;
+      padding: 40px 80px;
+      font-size: 2rem;
+      margin: 5px;
       cursor: pointer;
-      border: none;
       border-radius: 8px;
-      background: #4CAF50;
+      border: none;
+      background-color: #4CAF50;
       color: white;
-      transition: background 0.2s;
+      transition: background-color 0.3s ease;
     }
     button:hover {
-      background: #45a049;
+      background-color: #45a049;
     }
-    #reset {
+    #resetBtn {
+      background-color: #f44336;
+      display: none; /* oculto hasta terminar */
+    }
+    #resetBtn:hover {
+      background-color: #da190b;
+    }
+    #stats {
       margin-top: 20px;
-      background: #f44336;
+      font-size: 1.2rem;
+      line-height: 1.5;
+      display: none; /* oculto hasta terminar */
+      border: 2px solid #4CAF50;
+      border-radius: 10px;
+      padding: 15px;
+      max-width: 350px;
+      margin-left: auto;
+      margin-right: auto;
+      background-color: white;
+      color: #333;
     }
-    #reset:hover {
-      background: #da190b;
-    }
-
-    /* Estilo para el botón de PayPal fijo en esquina inferior derecha */
-    #paypal-donate {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      z-index: 1000;
-      border-radius: 8px;
-      overflow: hidden;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
-    }
-
-    #paypal-donate input[type="submit"] {
-      background: #0070ba;
-      color: white;
-      font-weight: bold;
-      border: none;
-      padding: 12px 20px;
-      cursor: pointer;
+    #instructions {
       font-size: 1rem;
-      border-radius: 8px;
-      transition: background 0.3s;
-    }
-
-    #paypal-donate input[type="submit"]:hover {
-      background: #005c99;
+      margin-bottom: 20px;
+      color: #555;
+      max-width: 400px;
+      margin-left: auto;
+      margin-right: auto;
     }
   </style>
 </head>
 <body>
-  <h1>¡Haz Click!</h1>
+  <h1>Clicks Per Second Challenge</h1>
+  <div id="instructions">Haz clic en el botón tantas veces como puedas en 20 segundos. ¡Mide tus clicks por segundo!</div>
+  <div id="timer">Tiempo restante: 20s</div>
   <div id="score">0</div>
-  <button id="clicker">Click +1</button>
-  <br/>
-  <button id="reset">Reiniciar</button>
+  <button id="clicker">Click Me!</button>
+  <button id="resetBtn">Reiniciar</button>
 
-  <!-- Botón de donación PayPal fijo -->
-  <form
-    id="paypal-donate"
-    action="https://www.paypal.com/donate"
-    method="post"
-    target="_blank"
-    >
-    <input type="hidden" name="business" value="francoliendo36@gmail.com" />
-    <input type="hidden" name="currency_code" value="USD" />
-    <input type="submit" value="Donar con PayPal" />
-  </form>
+  <div id="stats">
+    <p><strong>Estadísticas del juego:</strong></p>
+    <p>Clicks por segundo máximos: <span id="maxCPS">0</span></p>
+    <p>Clicks por segundo promedio: <span id="avgCPS">0</span></p>
+    <p>Clicks por segundo mínimos: <span id="minCPS">0</span></p>
+    <p>Récord personal (total clicks): <span id="personalRecord">0</span></p>
+  </div>
 
   <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      let score = 0;
-      const scoreElement = document.getElementById('score');
-      const clicker = document.getElementById('clicker');
-      const reset = document.getElementById('reset');
+    const timeTotal = 20;
+    let timeLeft = timeTotal;
+    let score = 0;
+    let timer = null;
+    let cpsHistory = [];
+    let clicksThisSecond = 0;
 
-      clicker.addEventListener('click', () => {
+    const timerElement = document.getElementById('timer');
+    const scoreElement = document.getElementById('score');
+    const clicker = document.getElementById('clicker');
+    const resetBtn = document.getElementById('resetBtn');
+    const statsDiv = document.getElementById('stats');
+    const maxCPSElement = document.getElementById('maxCPS');
+    const avgCPSElement = document.getElementById('avgCPS');
+    const minCPSElement = document.getElementById('minCPS');
+    const personalRecordElement = document.getElementById('personalRecord');
+
+    function updateStats() {
+      if (cpsHistory.length === 0) return;
+
+      const max = Math.max(...cpsHistory);
+      const min = Math.min(...cpsHistory);
+      const avg = (cpsHistory.reduce((a, b) => a + b, 0) / cpsHistory.length).toFixed(2);
+
+      maxCPSElement.textContent = max;
+      minCPSElement.textContent = min;
+      avgCPSElement.textContent = avg;
+
+      let personalRecord = localStorage.getItem('clickerPersonalRecord');
+      personalRecord = personalRecord ? parseInt(personalRecord, 10) : 0;
+      if (score > personalRecord) {
+        localStorage.setItem('clickerPersonalRecord', score);
+        personalRecord = score;
+      }
+      personalRecordElement.textContent = personalRecord;
+    }
+
+    function startTimer() {
+      if (timer) return;
+
+      timer = setInterval(() => {
+        timeLeft--;
+        timerElement.textContent = `Tiempo restante: ${timeLeft}s`;
+
+        // Guardar clicks del segundo actual y reiniciar el contador de este segundo
+        cpsHistory.push(clicksThisSecond);
+        clicksThisSecond = 0;
+
+        if (timeLeft <= 0) {
+          clearInterval(timer);
+          timer = null;
+          clicker.disabled = true;
+          resetBtn.style.display = 'inline-block';
+          statsDiv.style.display = 'block';
+          updateStats();
+        }
+      }, 1000);
+    }
+
+    clicker.addEventListener('click', () => {
+      if (timeLeft > 0) {
         score++;
+        clicksThisSecond++;
         scoreElement.textContent = score;
-      });
+        startTimer();
+      }
+    });
 
-      reset.addEventListener('click', () => {
-        score = 0;
-        scoreElement.textContent = score;
-      });
+    resetBtn.addEventListener('click', () => {
+      score = 0;
+      timeLeft = timeTotal;
+      cpsHistory = [];
+      clicksThisSecond = 0;
+      timerElement.textContent = `Tiempo restante: ${timeLeft}s`;
+      scoreElement.textContent = score;
+      clicker.disabled = false;
+      resetBtn.style.display = 'none';
+      statsDiv.style.display = 'none';
     });
   </script>
 </body>
