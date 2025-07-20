@@ -100,9 +100,9 @@
 
     <div id="stats">
       <p><strong>Estadísticas del juego:</strong></p>
-      <p>Clicks por segundo máximos: <span id="maxCPS">0</span></p>
-      <p>Clicks por segundo promedio: <span id="avgCPS">0</span></p>
-      <p>Clicks por segundo mínimos: <span id="minCPS">0</span></p>
+      <p>Max CPS: <span id="maxCPS">0</span></p>
+      <p>Avg. CPS: <span id="avgCPS">0</span></p>
+      <p>Min CPS: <span id="minCPS">0</span></p>
       <p>Récord personal (total clicks): <span id="personalRecord">0</span></p>
     </div>
   </div>
@@ -150,7 +150,7 @@
 
       timer = setInterval(() => {
         timeLeft--;
-        timerElement.textContent = `Tiempo restante: ${timeLeft}s`;
+        timerElement.textContent = `Time left: ${timeLeft}s`;
 
         cpsHistory.push(clicksThisSecond);
         clicksThisSecond = 0;
@@ -180,7 +180,7 @@
       timeLeft = timeTotal;
       cpsHistory = [];
       clicksThisSecond = 0;
-      timerElement.textContent = `Tiempo restante: ${timeLeft}s`;
+      timerElement.textContent = `Time left: ${timeLeft}s`;
       scoreElement.textContent = score;
       clicker.disabled = false;
       resetBtn.style.display = 'none';
