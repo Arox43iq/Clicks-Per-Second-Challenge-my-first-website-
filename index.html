@@ -85,31 +85,7 @@
       margin-right: auto;
     }
 
-    /* Botón PayPal fijo */
-    #paypal-donate {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      z-index: 1000;
-      border-radius: 8px;
-      overflow: hidden;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
-    }
-
-    #paypal-donate input[type="submit"] {
-      background: #0070ba;
-      color: white;
-      font-weight: bold;
-      border: none;
-      padding: 12px 20px;
-      cursor: pointer;
-      font-size: 1rem;
-      border-radius: 8px;
-      transition: background 0.3s;
-    }
-
-    #paypal-donate input[type="submit"]:hover {
-      background: #005c99;
+   
     }
   </style>
 </head>
@@ -134,11 +110,7 @@
     </div>
   </div>
 
-  <!-- Botón PayPal con emoji ☕ -->
-  <form id="paypal-donate" action="https://www.paypal.com/donate" method="post" target="_blank">
-    <input type="hidden" name="business" value="francoliendo36@gmail.com" />
-    <input type="hidden" name="currency_code" value="USD" />
-    <input type="submit" value="☕ Buy me a coffee =)" />
+  
   </form>
 
   <script>
